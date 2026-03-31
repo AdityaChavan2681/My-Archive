@@ -35,6 +35,8 @@ The system focuses on structuring historical data sourced from research-based ma
 
 ## 🧪 How to Run Locally
 
+**Note: Please run it using Command Prompt, Powershell may not work**
+
 ### Backend
 ```bash
 cd backend
