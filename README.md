@@ -59,7 +59,7 @@ npm start
 
 📸 Screenshots
 Homepage
-<img width="100%" src="https://github.com/user-attachments/assets/13a9dceb-12da-4d47-8cce-460b91aac621" />
+<img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/89501bb7-5056-4347-808b-da78502f938f" />
 
 ⚙️ Current Status
 Full application structure (frontend, backend, admin) is running locally
