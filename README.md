@@ -64,7 +64,7 @@ Homepage
 ⚙️ Current Status
 Full application structure (frontend, backend, admin) is running locally
 Core system design and API flow are functional
-Database-backed content is currently being reconfigured in this environment
+Database-backed content is currently being reconfigured
 
 🧠 Reflection
 
