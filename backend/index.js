@@ -10,13 +10,42 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 
+// Mock data
+const mockItems = [
+  {
+    id: 1,
+    name: "Ancient Ship Record",
+    image: "/images/sample1.jpg",
+    category: "ships",
+    description: "A historical ship archive entry"
+  },
+  {
+    id: 2,
+    name: "Historic Building Record",
+    image: "/images/sample2.jpg",
+    category: "buildings",
+    description: "A historical building archive entry"
+  },
+  {
+    id: 3,
+    name: "Old Naval Vessel",
+    image: "/images/sample3.jpg",
+    category: "ships",
+    description: "Another archive record"
+  }
+];
+
 // Database Connection with mongoDB
-mongoose.connect("mongodb+srv://neww:passwordd@cluster0.ho2tglh.mongodb.net/");
+if (process.env.MONGO_URI) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection failed:", err.message));
+}
 
 // API Creation
 
 app.get("/", (req, res) => {
-  res.send("Express App Is Running");
+  res.send("My Archive backend is running");
 });
 
 // Image Storage Engine
@@ -117,11 +146,10 @@ app.post('/removeproduct', async (req, res) => {
 })
 
 //Creating API for getting all products
-app.get('/allproducts', async (req, res) => {
-  let products = await Product.find({});
-  console.log('All products fetched');
-  res.send(products);
-})
+app.get('/allproducts', (req, res) => {
+  console.log('Mock items fetched');
+  res.json(mockItems);
+});
 
 // Schema creation for Users model
 
@@ -201,21 +229,25 @@ app.post('/login', async (req, res) => {
 })
 
 // creating endpoint for new collections data
-app.get('/newcollections', async (req, res) => {
-  let products = await Product.find({});
-  let newcollection = products.slice(1).slice(-8);
-  console.log("New Collection Fetched");
-  res.send(newcollection);
-})
+app.get('/newcollections', (req, res) => {
+  const newcollection = mockItems.slice(-3);
+
+  console.log("New Collection Fetched (mock)");
+
+  res.json(newcollection);
+});
 
 // creating endpoint for popular in ships section
 
-app.get('/popularinships', async (req, res) => {
-  let products = await Product.find({ category: "ships" });
-  let popular_in_ships = products.slice(0, 4);
-  console.log("Popular in ships fetched");
-  res.send(popular_in_ships);
-})
+app.get('/popularinships', (req, res) => {
+  const ships = mockItems.filter(item => item.category === "ships");
+
+  const popularInShips = ships.slice(0, 4);
+
+  console.log("Popular in ships fetched (mock)");
+
+  res.json(popularInShips);
+});
 
 // creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
@@ -264,7 +296,7 @@ app.post('/getcart', fetchUser, async (req, res) => {
 app.listen(port, (error) => {
   if (!error) {
 
-    console.log("Server running on Port" + port)
+    console.log("Server running on Port " + port);
   }
   else {
     console.log("Error: " + error)
