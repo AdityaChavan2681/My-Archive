@@ -10,25 +10,27 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 
+
+
 // Mock data
 const mockItems = [
   {
     id: 1,
-    name: "Ancient Ship Record",
+    title: "Ancient Ship Record",
     image: "/images/sample1.jpg",
     category: "ships",
     description: "A historical ship archive entry"
   },
   {
     id: 2,
-    name: "Historic Building Record",
+    title: "Historic Building Record",
     image: "/images/sample2.jpg",
     category: "buildings",
     description: "A historical building archive entry"
   },
   {
     id: 3,
-    name: "Old Naval Vessel",
+    title: "Old Naval Vessel",
     image: "/images/sample3.jpg",
     category: "ships",
     description: "Another archive record"
@@ -63,21 +65,21 @@ const upload = multer({ storage: storage })
 
 app.use('/images', express.static('upload/images'))
 
-app.post("/upload", upload.single('product'), (req, res) => {
+app.post("/upload", upload.single('image'), (req, res) => {
   res.json({
     success: 1,
     image_url: `http://localhost:${port}/images/${req.file.filename}`
   })
 })
 
-// schema for creating products 
+// schema for creating ArchiveItems 
 
-const Product = mongoose.model("Product", {
+const ArchiveItem = mongoose.model("ArchiveItem", {
   id: {
     type: Number,
     required: true,
   },
-  name: {
+  title: {
     type: String,
     required: true,
   },
@@ -89,11 +91,7 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  new_price: {
-    type: String,
-    required: true,
-  },
-  old_price: {
+  description: {
     type: String,
     required: true,
   },
@@ -105,50 +103,84 @@ const Product = mongoose.model("Product", {
     type: Boolean,
     default: true,
   }
-})
+});
 
-app.post('/addproduct', async (req, res) => {
-  let products = await Product.find({});
+app.post('/addArchiveItem', async (req, res) => {
+  let archiveItems = await ArchiveItem.find({});
   let id;
-  if (products.length > 0) {
-    let last_product_array = products.slice(-1);
-    let last_product = last_product_array[0];
-    id = last_product.id + 1;
-  }
-  else {
+
+  if (archiveItems.length > 0) {
+    let lastArchiveItemArray = archiveItems.slice(-1);
+    let lastArchiveItem = lastArchiveItemArray[0];
+    id = lastArchiveItem.id + 1;
+  } else {
     id = 1;
   }
-  const product = new Product({
+
+  const archiveItem = new ArchiveItem({
     id: id,
-    name: req.body.name,
+    title: req.body.title,
     image: req.body.image,
     category: req.body.category,
-    new_price: req.body.new_price,
-    old_price: req.body.old_price,
+    description: req.body.description,
   });
-  console.log(product);
-  await product.save();
+
+  console.log(archiveItem);
+  await archiveItem.save();
   console.log("Saved");
+
   res.json({
     success: true,
-    name: req.body.name,
-  })
-})
+    title: req.body.title,
+  });
+});
 
-// Creating API For deleting Products
-app.post('/removeproduct', async (req, res) => {
-  await Product.findOneAndDelete({ id: req.body.id });
+// Creating API For deleting ArchiveItems
+app.post('/removeArchiveItem', async (req, res) => {
+  await ArchiveItem.findOneAndDelete({ id: req.body.id });
   console.log("Removed");
   res.json({
     success: true,
-    name: req.body.name,
+    title: req.body.title
   })
 })
 
-//Creating API for getting all products
-app.get('/allproducts', (req, res) => {
-  console.log('Mock items fetched');
-  res.json(mockItems);
+//Creating API for getting all ArchiveItems
+app.get('/allitems', (req, res) => {
+  const { category, search, page = 1, limit = 2 } = req.query;
+
+  let results = [...mockItems];
+
+  if (category) {
+    results = results.filter(item => item.category === category);
+  }
+
+  if (search) {
+    const searchTerm = search.toLowerCase();
+    results = results.filter(item =>
+      item.title.toLowerCase().includes(searchTerm) ||
+      item.description.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  const pageNum = Number(page);
+  const limitNum = Number(limit);
+
+  const startIndex = (pageNum - 1) * limitNum;
+  const endIndex = startIndex + limitNum;
+
+  const paginatedResults = results.slice(startIndex, endIndex);
+
+  console.log({
+    category,
+    search,
+    page: pageNum,
+    limit: limitNum,
+    totalResults: results.length,
+    returned: paginatedResults.length
+  });
+
+  res.json(paginatedResults);
 });
 
 // Schema creation for Users model
@@ -266,7 +298,7 @@ const fetchUser = async (req, res, next) => {
   }
 }
 
-// creating endpoint for adding products in cart data
+// creating endpoint for adding ArchiveItems in cart data
 app.post('/addtocart', fetchUser, async (req, res) => {
   console.log("added", req.body.itemId);
   // console.log(req.body,req.user);
@@ -276,7 +308,7 @@ app.post('/addtocart', fetchUser, async (req, res) => {
   res.send("Added")
 })
 
-// creating endpoint to remove product from cart data
+// creating endpoint to remove ArchiveItem from cart data
 app.post('/removefromcart', fetchUser, async (req, res) => {
   console.log("removed", req.body.itemId);
   let userData = await Users.findOne({ _id: req.user.id });
@@ -302,3 +334,4 @@ app.listen(port, (error) => {
     console.log("Error: " + error)
   }
 });
+
