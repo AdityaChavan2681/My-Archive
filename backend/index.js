@@ -6,36 +6,14 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-
+const itemRoutes = require('./routes/itemRoutes');
+const ArchiveItem = require('./models/ArchiveItem');
 app.use(express.json());
 app.use(cors());
+app.use('/api/items', itemRoutes);
 
 
 
-// Mock data
-const mockItems = [
-  {
-    id: 1,
-    title: "Ancient Ship Record",
-    image: "/images/sample1.jpg",
-    category: "ships",
-    description: "A historical ship archive entry"
-  },
-  {
-    id: 2,
-    title: "Historic Building Record",
-    image: "/images/sample2.jpg",
-    category: "buildings",
-    description: "A historical building archive entry"
-  },
-  {
-    id: 3,
-    title: "Old Naval Vessel",
-    image: "/images/sample3.jpg",
-    category: "ships",
-    description: "Another archive record"
-  }
-];
 
 // Database Connection with mongoDB
 if (process.env.MONGO_URI) {
@@ -72,38 +50,6 @@ app.post("/upload", upload.single('image'), (req, res) => {
   })
 })
 
-// schema for creating ArchiveItems 
-
-const ArchiveItem = mongoose.model("ArchiveItem", {
-  id: {
-    type: Number,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  available: {
-    type: Boolean,
-    default: true,
-  }
-});
 
 app.post('/addArchiveItem', async (req, res) => {
   let archiveItems = await ArchiveItem.find({});
@@ -145,43 +91,7 @@ app.post('/removeArchiveItem', async (req, res) => {
   })
 })
 
-//Creating API for getting all ArchiveItems
-app.get('/allitems', (req, res) => {
-  const { category, search, page = 1, limit = 2 } = req.query;
 
-  let results = [...mockItems];
-
-  if (category) {
-    results = results.filter(item => item.category === category);
-  }
-
-  if (search) {
-    const searchTerm = search.toLowerCase();
-    results = results.filter(item =>
-      item.title.toLowerCase().includes(searchTerm) ||
-      item.description.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  const pageNum = Number(page);
-  const limitNum = Number(limit);
-
-  const startIndex = (pageNum - 1) * limitNum;
-  const endIndex = startIndex + limitNum;
-
-  const paginatedResults = results.slice(startIndex, endIndex);
-
-  console.log({
-    category,
-    search,
-    page: pageNum,
-    limit: limitNum,
-    totalResults: results.length,
-    returned: paginatedResults.length
-  });
-
-  res.json(paginatedResults);
-});
 
 // Schema creation for Users model
 
