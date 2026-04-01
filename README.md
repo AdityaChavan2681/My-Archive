@@ -74,6 +74,6 @@ npm start
 
 This project began from an older e-commerce codebase and is being refactored into a historical archive platform. The current focus is on backend structure, authentication flow, data modeling, and scalable organization of archive entities.
 
-## 🧠 Reflection
+## 💭 Reflection
 
 This project is designed to strengthen my backend development skills, focusing on system design and real-world application flow and also to strengthen my understanding of full-stack architecture, debugging across different environments to build systems grounded in meaningful data.
