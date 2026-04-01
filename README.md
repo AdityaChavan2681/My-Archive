@@ -10,7 +10,7 @@ The system focuses on structuring historical data sourced from research-based ma
 ## 🛠️ Tech Stack
 - Backend: Node.js, Express.js  
 - Frontend: React.js  
-- Database: MongoDB / Mongoose *(currently being reconfigured)*  
+- Database: MongoDB / Mongoose  
 - Authentication: JWT  
 - File Handling: Multer  
 
@@ -26,6 +26,14 @@ The system focuses on structuring historical data sourced from research-based ma
 
 ---
 
+## 🧠 Backend Highlights
+
+- JWT-based authentication flow
+- Express-based REST API structure
+- Multer image upload handling
+- Modular full-stack structure with frontend, backend, and admin separation
+- Ongoing transition from inherited e-commerce data flow to archive-specific modeling
+
 ## 📁 Project Structure Highlights
 - `frontend/` → User-facing interface  
 - `backend/` → API, routes, and server-side logic  
@@ -34,6 +42,8 @@ The system focuses on structuring historical data sourced from research-based ma
 ---
 
 ## 🧪 How to Run Locally
+
+**Requirements: Node.js and project dependencies installed locally**
 
 
 ### Backend
@@ -56,16 +66,14 @@ npm install
 npm start
 ```
 
-📸 Screenshots
-Homepage
+## 📸 Screenshots
+### Homepage
 <img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/89501bb7-5056-4347-808b-da78502f938f" />
 
-⚙️ Current Status
-Full application structure (frontend, backend, admin) is running locally
-Core system design and API flow are functional
-Database-backed content is currently being reconfigured
+## ⚙️ Project Direction
 
-🧠 Reflection
+This project began from an older e-commerce codebase and is being refactored into a historical archive platform. The current focus is on backend structure, authentication flow, data modeling, and scalable organization of archive entities.
 
-This project is meant to consistently help me grow in back end stacks focusing on system design, and real-world flow.
-Working on this helped me strengthen my understanding of full-stack architecture, debugging across environments, and building scalable systems grounded in meaningful data.
+## 🧠 Reflection
+
+This project is designed to strengthen my backend development skills, focusing on system design and real-world application flow and also to strengthen my understanding of full-stack architecture, debugging across different environments to build systems grounded in meaningful data.
