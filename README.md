@@ -68,5 +68,5 @@ Database-backed content is currently being reconfigured in this environment
 
 🧠 Reflection
 
-This project represents my transition back into backend development, focusing on structured system design, API clarity, and real-world application flow.
+This project is meant to consistently help me grow in back end stacks focusing on system design, and real-world flow.
 Working on this helped me strengthen my understanding of full-stack architecture, debugging across environments, and building scalable systems grounded in meaningful data.
