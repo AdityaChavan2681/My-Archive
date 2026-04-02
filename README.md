@@ -27,11 +27,11 @@ The system focuses on structuring historical data sourced from research-based ma
 ---
 
 ## 🧠 Backend Highlights
-
 - JWT-based authentication flow
 - Express-based REST API structure
 - Multer image upload handling
 - Modular full-stack structure with frontend, backend, and admin separation
+- Refactored an existing e-commerce codebase into a domain-specific archive platform, improving structure, API design, and scalability.
 - Ongoing transition from inherited e-commerce data flow to archive-specific modeling
 
 ## 📁 Project Structure Highlights
