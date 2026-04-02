@@ -1,32 +1,59 @@
-
 const mongoose = require('mongoose');
-const ArchiveItem = mongoose.model("ArchiveItem", {
-  id: {
-    type: Number,
-    required: true,
-  },
+
+const archiveItemSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  image: {
+
+  slug: {
     type: String,
-    required: true,
+    unique: true,
   },
+
+  summary: {
+    type: String,
+  },
+
+  content: {
+    type: String, // long description / article
+  },
+
   category: {
-    type: String,
-    required: true,
+    type: String, // later can be ObjectId
   },
-  description: {
+
+  tags: [String],
+
+  images: [
+    {
+      url: String,
+    }
+  ],
+
+  references: [
+    {
+      title: String,
+      link: String,
+      note: String,
+    }
+  ],
+
+  status: {
     type: String,
-    required: true,
+    enum: ["draft", "published"],
+    default: "draft",
   },
-  date: {
+
+  createdAt: {
     type: Date,
     default: Date.now,
   },
-  available: {
-    type: Boolean,
-    default: true,
+
+  updatedAt: {
+    type: Date,
+    default: Date.now,
   }
 });
+
+module.exports = mongoose.model("ArchiveItem", archiveItemSchema);
