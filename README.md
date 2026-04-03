@@ -38,10 +38,13 @@ The system focuses on structuring historical data sourced from research-based ma
 
 📥 Example Request
 
+```bash
 GET /api/items?page=1&limit=2
+```
 
 📤 Example Response
 
+```json
 [
   {
     "id": 1,
@@ -58,6 +61,7 @@ GET /api/items?page=1&limit=2
     "description": "A historical building archive entry"
   }
 ]
+```
 
 ⚙️ Description
 
@@ -65,9 +69,11 @@ This demonstrates pagination and structured data retrieval using a mock dataset.
 
 🔎 Additional Examples
 
+```bash
 GET /api/items?category=ships
 GET /api/items?search=ship
 GET /api/items?page=2&limit=2
+```
 
 
 ## 📁 Project Structure Highlights
@@ -103,7 +109,7 @@ npm start
 ```
 
 ## 📸 Screenshots
-### Homepage
+### 🏠 Homepage
 <img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/89501bb7-5056-4347-808b-da78502f938f" />
 
 ### 🔌 API Response Preview
