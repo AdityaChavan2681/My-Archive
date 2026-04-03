@@ -34,7 +34,7 @@ The system focuses on structuring historical data sourced from research-based ma
 - Refactored an existing e-commerce codebase into a domain-specific archive platform, improving structure, API design, and scalability.
 - Ongoing transition from inherited e-commerce data flow to archive-specific modeling
 
-🔌 API Example (Mock Data)
+## 🔌 API Example (Mock Data)
 
 📥 Example Request
 
