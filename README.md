@@ -10,7 +10,7 @@ The system focuses on structuring historical data sourced from research-based ma
 ## 🛠️ Tech Stack
 - Backend: Node.js, Express.js  
 - Frontend: React.js  
-- Database: MongoDB (planned integration), currently using mock dataset for API validation  
+- Database: MongoDB with Mongoose (implemented)
 - Authentication: JWT  
 - File Handling: Multer  
 
@@ -23,6 +23,9 @@ The system focuses on structuring historical data sourced from research-based ma
 - Admin dashboard for managing entries  
 - Categorized frontend interface (Ships, Buildings, Others)  
 - Scalable architecture for future extensions  
+- MongoDB integration with Mongoose for persistent data storage
+- Server-side pagination, filtering, and search using database queries
+- Seed script for initializing archive data
 
 ---
 
@@ -32,9 +35,13 @@ The system focuses on structuring historical data sourced from research-based ma
 - Multer image upload handling
 - Modular full-stack structure with frontend, backend, and admin separation
 - Refactored an existing e-commerce codebase into a domain-specific archive platform, improving structure, API design, and scalability.
-- Ongoing transition from inherited e-commerce data flow to archive-specific modeling
+- Successfully transitioned from e-commerce data flow to archive-specific data modeling
+- MongoDB integration using Mongoose models
+- Database-driven filtering, search, and pagination
+- Migration from mock data to persistent storage
 
-## 🔌 API Example (Mock Data)
+
+## 🔌 API Example (MongoDB)
 
 📥 Example Request
 
@@ -45,27 +52,27 @@ GET /api/items?page=1&limit=2
 📤 Example Response
 
 ```json
-[
-  {
-    "id": 1,
-    "title": "Ancient Ship 1",
-    "image": "/images/image_1709830385461.jpg",
-    "category": "ships",
-    "description": "A historical ship archive entry"
-  },
-  {
-    "id": 2,
-    "title": "Historic Building Record",
-    "image": "/images/sample2.jpg",
-    "category": "buildings",
-    "description": "A historical building archive entry"
-  }
-]
+{
+  "items": [
+    {
+      "_id": "69d48bca3817900069dc680c",
+      "title": "Old Naval Vessel",
+      "slug": "old-naval-vessel",
+      "summary": "Another archive record",
+      "category": "ships",
+      "status": "published",
+      "createdAt": "2026-04-07T04:44:58.279Z"
+    }
+  ],
+  "totalResults": 3,
+  "currentPage": 1,
+  "totalPages": 2
+}
 ```
 
 ⚙️ Description
 
-This demonstrates pagination and structured data retrieval using a mock dataset. The API supports filtering, search, and pagination through query parameters.
+This demonstrates pagination, filtering, and search using MongoDB queries via Mongoose.
 
 🔎 Additional Examples
 
@@ -91,7 +98,23 @@ GET /api/items?page=2&limit=2
 ### Backend
 ```bash
 cd backend
-node index.js
+node seed.js   # (optional) populate database
+node index.js  # start server
+```
+
+## 🗄️ Database Setup
+
+This project uses MongoDB for data persistence.
+
+### Setup
+1. Install MongoDB Community Server locally (MongoDB Compass is optional for GUI access)
+2. Create a `.env` file inside the `backend/` directory:
+3. Connect the MONGO_URI defined in your .env with your local MongoDB server
+
+```env
+PORT=3000
+MONGO_URI=mongodb://127.0.0.1:27017/myarchive
+JWT_SECRET=your_jwt_secret
 ```
 
 ### Frontend
@@ -114,12 +137,19 @@ npm start
 
 ### 🔌 API Response Preview
 
-<img width="1052" height="335" alt="Screenshot 2026-04-03 130844" src="https://github.com/user-attachments/assets/62eb4957-b378-4229-9d3e-999e3fa07c22" />
+<img width="764" height="976" alt="image" src="https://github.com/user-attachments/assets/da013e04-a66c-4c30-b150-ad384cd30179" />
+
+## 📊 Current Status
+
+- ✅ MongoDB integration completed
+- ✅ Backend API migrated from mock data to database
+- ✅ Filtering, search, and pagination implemented at database level
+- 🔄 Next: CRUD operations and route protection
 
 
 ## ⚙️ Project Direction
 
-This project began from an older e-commerce codebase and is being refactored into a historical archive platform. The current focus is on backend structure, authentication flow, data modeling, and scalable organization of archive entities.
+The project has evolved from an initial mock-data-based backend to a fully database-driven system using MongoDB and Mongoose. The current focus is on expanding backend capabilities, implementing full CRUD operations, and strengthening authentication and data management workflows.
 
 ## 💭 Reflection
 
