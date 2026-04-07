@@ -85,7 +85,7 @@ GET /api/items?page=2&limit=2
 
 ## 📁 Project Structure Highlights
 - `frontend/` → User-facing interface  
-- `backend/` → API, routes, and server-side logic  
+- `backend/` → API, routes, and server-side logic
 - `admin/` → Dashboard for managing content  
 
 ---
