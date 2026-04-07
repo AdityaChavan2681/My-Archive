@@ -81,4 +81,68 @@ const getAllItems = async (req, res) => {
   }
 };
 
-module.exports = { getAllItems };
+const getItemBySlug = async (req, res) => {
+  try {
+    const item = await ArchiveItem.findOne({ slug: req.params.slug });
+
+    if (!item) {
+      return res.status(404).json({ error: "Archive item not found" });
+    }
+
+    res.json(item);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+
+const createItem = async (req, res) => {
+  try {
+    const {
+      title,
+      slug,
+      summary,
+      content,
+      category,
+      tags,
+      images,
+      references,
+      status
+    } = req.body;
+
+    if (!title || !slug || !category) {
+      return res.status(400).json({
+        error: "Title, slug, and category are required"
+      });
+    }
+
+    const existingItem = await ArchiveItem.findOne({ slug });
+
+    if (existingItem) {
+      return res.status(400).json({ error: "Slug already exists" });
+    }
+
+    const newItem = new ArchiveItem({
+      title,
+      slug,
+      summary,
+      content,
+      category,
+      tags: tags || [],
+      images: images || [],
+      references: references || [],
+      status: status || "draft"
+    });
+
+    const savedItem = await newItem.save();
+
+    res.status(201).json(savedItem);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { getAllItems, getItemBySlug, createItem };
