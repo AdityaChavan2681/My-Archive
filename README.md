@@ -26,6 +26,7 @@ The system focuses on structuring historical data sourced from research-based ma
 - MongoDB integration with Mongoose for persistent data storage
 - Server-side pagination, filtering, and search using database queries
 - Seed script for initializing archive data
+- API support for creating new archive items (POST endpoint with validation)
 
 ---
 
@@ -39,6 +40,7 @@ The system focuses on structuring historical data sourced from research-based ma
 - MongoDB integration using Mongoose models
 - Database-driven filtering, search, and pagination
 - Migration from mock data to persistent storage
+- Archive item creation endpoint with validation and duplicate slug protection
 
 
 ## 🔌 API Example (MongoDB)
@@ -70,9 +72,32 @@ GET /api/items?page=1&limit=2
 }
 ```
 
-⚙️ Description
 
-This demonstrates pagination, filtering, and search using MongoDB queries via Mongoose.
+
+
+
+### ⚙️ Description
+
+This API supports archive item retrieval, search, pagination, and creation using MongoDB and Mongoose.
+
+## 🔧 Additional API Endpoints
+
+### Get Single Item
+```bash
+GET /api/items/:slug
+```
+
+### Create Item
+```bash
+POST /api/items
+
+
+{
+  "title": "Ancient Harbor Map",
+  "slug": "ancient-harbor-map",
+  "category": "maps"
+}
+```
 
 🔎 Additional Examples
 
@@ -109,7 +134,7 @@ This project uses MongoDB for data persistence.
 ### Setup
 1. Install MongoDB Community Server locally (MongoDB Compass is optional for GUI access)
 2. Create a `.env` file inside the `backend/` directory:
-3. Connect the MONGO_URI defined in your .env with your local MongoDB server
+3. Ensure the MONGO_URI in your .env points to your MongoDB instance
 
 ```env
 PORT=3000
@@ -144,8 +169,18 @@ npm start
 - ✅ MongoDB integration completed
 - ✅ Backend API migrated from mock data to database
 - ✅ Filtering, search, and pagination implemented at database level
-- 🔄 Next: CRUD operations and route protection
 
+## 🔄 CRUD Progress
+
+- ✅ Create (POST /api/items)
+- ✅ Read (GET /api/items, GET /api/items/:slug)
+- 🔄 Update (in progress)
+- 🔄 Delete (planned)
+
+## 🔜 Next Steps
+
+- Implement update and delete endpoints
+- Add route protection using JWT
 
 ## ⚙️ Project Direction
 
