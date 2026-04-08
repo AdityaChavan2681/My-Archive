@@ -41,6 +41,16 @@ The system focuses on structuring historical data sourced from research-based ma
 - Database-driven filtering, search, and pagination
 - Migration from mock data to persistent storage
 - Archive item creation endpoint with validation and duplicate slug protection
+- Proper HTTP status code handling (200, 201, 400, 404, 500)
+- Error handling for invalid input and missing resources
+
+## 🧪 API Testing
+
+All endpoints have been tested using Postman:
+
+- POST → returns 201 Created
+- GET → returns paginated results
+- PUT → successfully updates items (200 OK)
 
 
 ## 🔌 API Example (MongoDB)
@@ -100,6 +110,8 @@ POST /api/items
 ```
 
 ### Update Item
+
+
 ```bash
 PUT /api/items/:slug
 
@@ -111,6 +123,8 @@ PUT /api/items/:slug
   "status": "published"
 }
 ```
+
+✔ Tested using Postman with successful 200 OK response
 
 
 🔎 Additional Examples
@@ -193,7 +207,7 @@ npm start
 
 ## 🔜 Next Steps
 
-- Implement update and delete endpoints
+- Implement delete endpoint to complete CRUD functionality
 - Add route protection using JWT
 
 ## ⚙️ Project Direction
