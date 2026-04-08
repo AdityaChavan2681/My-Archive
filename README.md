@@ -26,7 +26,7 @@ The system focuses on structuring historical data sourced from research-based ma
 - MongoDB integration with Mongoose for persistent data storage
 - Server-side pagination, filtering, and search using database queries
 - Seed script for initializing archive data
-- API support for creating new archive items (POST endpoint with validation)
+- API support for creating and updating archive items (POST and PUT endpoints with validation)
 
 ---
 
@@ -98,6 +98,20 @@ POST /api/items
   "category": "maps"
 }
 ```
+
+### Update Item
+```bash
+PUT /api/items/:slug
+
+{
+  "title": "Updated Ship Record",
+  "summary": "Updated summary",
+  "content": "Updated content",
+  "category": "ships",
+  "status": "published"
+}
+```
+
 
 🔎 Additional Examples
 
@@ -174,7 +188,7 @@ npm start
 
 - ✅ Create (POST /api/items)
 - ✅ Read (GET /api/items, GET /api/items/:slug)
-- 🔄 Update (in progress)
+- ✅ Update (PUT /api/items/:slug)
 - 🔄 Delete (planned)
 
 ## 🔜 Next Steps
