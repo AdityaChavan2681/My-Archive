@@ -145,4 +145,31 @@ const createItem = async (req, res) => {
   }
 };
 
-module.exports = { getAllItems, getItemBySlug, createItem };
+const updateItem = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const updatedItem = await ArchiveItem.findOneAndUpdate(
+      { slug },
+      {
+        ...req.body,
+        updatedAt: Date.now()
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    res.json(updatedItem);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { getAllItems, getItemBySlug, createItem, updateItem };
