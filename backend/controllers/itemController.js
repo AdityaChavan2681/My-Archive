@@ -1,4 +1,6 @@
-// const mockItems = require('../data/mockItems');
+// Below is the mock data controller
+
+//const mockItems = require('../data/mockItems');
 
 // const getAllItems = (req, res) => {
 //   const { category, search, page = 1, limit = 2 } = req.query;
@@ -77,6 +79,7 @@ const getAllItems = async (req, res) => {
       totalPages: Math.ceil(totalResults / limitNum)
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -95,8 +98,6 @@ const getItemBySlug = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
-
 
 const createItem = async (req, res) => {
   try {
@@ -172,4 +173,30 @@ const updateItem = async (req, res) => {
   }
 };
 
-module.exports = { getAllItems, getItemBySlug, createItem, updateItem };
+const deleteItem = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const deletedItem = await ArchiveItem.findOneAndDelete({ slug });
+
+    if (!deletedItem) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    res.json({
+      message: "Item deleted successfully",
+      deletedItem
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = {
+  getAllItems,
+  getItemBySlug,
+  createItem,
+  updateItem,
+  deleteItem
+};
