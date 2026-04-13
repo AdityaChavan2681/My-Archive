@@ -90,16 +90,14 @@ GET /api/items?page=1&limit=2
 ```
 
 
-
-
-
 ### ⚙️ Description
 
-This API supports full CRUD operations, authentication, search, filtering, and pagination using MongoDB and Mongoose.
+This API supports full CRUD operations, search, filtering, and pagination using MongoDB and Mongoose.
 
 ## 🔧 Additional API Endpoints
 
 ### Get Single Item
+
 ```bash
 GET /api/items/:slug
 ```
@@ -160,6 +158,36 @@ POST /api/auth/login
 ```
 
 Protected routes (POST, PUT, DELETE) require a valid JWT in the `auth-token` header.
+
+### 🔐 Using Protected Routes
+
+To access protected endpoints (create, update, delete), include your JWT token in the request headers.
+
+To use protected routes:
+
+1. Signup → `/api/auth/signup`
+2. Login → `/api/auth/login` (get JWT)
+3. Use token in request headers
+
+#### Example: Create Item with Authentication
+
+```bash
+POST /api/items
+```
+
+Headers:
+```http
+Authorization: Bearer <your_jwt_token>
+```
+
+Body:
+```json
+{
+  "title": "Authenticated Item",
+  "slug": "authenticated-item",
+  "category": "maps"
+}
+```
 
 🔎 Additional Examples
 
