@@ -1,9 +1,10 @@
-# 🧠 My Archive — Backend-Driven Historical Data Platform
+# 🧠 My Archive - Backend-Driven Historical Data Platform
 
 ## 📌 Overview
+
 My Archive is a full-stack application designed to explore and organize lesser-known historical archives such as ships, buildings, and other overlooked subjects.
 
-The system focuses on structuring historical data sourced from research-based materials and presenting it through a clean, scalable web interface.
+🚀 Built as a backend-focused system demonstrating full CRUD operations, scalable API design, and database-driven architecture using MongoDB.
 
 ---
 
@@ -26,7 +27,7 @@ The system focuses on structuring historical data sourced from research-based ma
 - MongoDB integration with Mongoose for persistent data storage
 - Server-side pagination, filtering, and search using database queries
 - Seed script for initializing archive data
-- API support for creating and updating archive items (POST and PUT endpoints with validation)
+- API support for full CRUD operations (POST, GET, PUT, DELETE) with validation
 
 ---
 
@@ -51,6 +52,8 @@ All endpoints have been tested using Postman:
 - POST → returns 201 Created
 - GET → returns paginated results
 - PUT → successfully updates items (200 OK)
+- DELETE → successfully removes items (200 OK)
+- GET by deleted slug → returns 404 Not Found
 
 
 ## 🔌 API Example (MongoDB)
@@ -126,6 +129,18 @@ PUT /api/items/:slug
 
 ✔ Tested using Postman with successful 200 OK response
 
+### Delete Item
+```bash
+DELETE /api/items/:slug
+```
+
+```
+DELETE /api/items/old-naval-vessel
+```
+
+
+✔ Tested using Postman with successful 200 OK response
+✔ Verified deletion by sending GET /api/items/:slug, which returned 404 Not Found
 
 🔎 Additional Examples
 
@@ -145,14 +160,24 @@ GET /api/items?page=2&limit=2
 
 ## 🧪 How to Run Locally
 
-**Requirements: Node.js and project dependencies installed locally**
+### Requirements
+- Node.js installed locally
+- MongoDB Community Server installed locally
+- MongoDB Compass installed (optional, for viewing database records visually)
+- Project dependencies installed
 
 
 ### Backend
 ```bash
 cd backend
-node seed.js   # (optional) populate database
-node index.js  # start server
+
+# Step 1: Start MongoDB locally
+
+# Step 2: Seed database (optional but recommended)
+node seed.js
+
+# Step 3: Start backend server
+node index.js
 ```
 
 ## 🗄️ Database Setup
@@ -203,12 +228,14 @@ npm start
 - ✅ Create (POST /api/items)
 - ✅ Read (GET /api/items, GET /api/items/:slug)
 - ✅ Update (PUT /api/items/:slug)
-- 🔄 Delete (planned)
+- ✅ Delete (DELETE /api/items/:slug)
 
 ## 🔜 Next Steps
 
-- Implement delete endpoint to complete CRUD functionality
 - Add route protection using JWT
+- Move remaining mock-data-based endpoints to MongoDB queries
+- Improve validation and input sanitization
+- Enhance admin features for better data control
 
 ## ⚙️ Project Direction
 
