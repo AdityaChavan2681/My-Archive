@@ -1,63 +1,78 @@
 const Users = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const signup = async (req, res) => {
-  let check = await Users.findOne({ email: req.body.email });
+  try {
+    let check = await Users.findOne({ email: req.body.email });
 
-  if (check) {
-    return res.status(400).json({
-      success: false,
-      errors: "existing user found with same email address"
-    });
-  }
-
-  let cart = {};
-  for (let i = 0; i < 300; i++) {
-    cart[i] = 0;
-  }
-
-  const user = new Users({
-    name: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    cartData: cart,
-  });
-
-  await user.save();
-
-  const data = {
-    user: {
-      id: user.id
+    if (check) {
+      return res.status(400).json({
+        success: false,
+        errors: "User already exists"
+      });
     }
-  };
 
-  const token = jwt.sign(data, 'secret_ecom');
+    // Hash password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-  res.json({ success: true, token });
+    const user = new Users({
+      name: req.body.username,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+
+    await user.save();
+
+    const data = {
+      user: {
+        id: user.id
+      }
+    };
+
+    const token = jwt.sign(data, process.env.JWT_SECRET);
+
+    res.json({ success: true, token });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 const login = async (req, res) => {
-  let user = await Users.findOne({ email: req.body.email });
+  try {
+    let user = await Users.findOne({ email: req.body.email });
 
-  if (user) {
-    const passCompare = req.body.password === user.password;
-
-    if (passCompare) {
-      const data = {
-        user: {
-          id: user.id
-        }
-      };
-
-      const token = jwt.sign(data, 'secret_ecom');
-      res.json({ success: true, token });
-
-    } else {
-      res.json({ success: false, errors: "Wrong Password" });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        errors: "Invalid credentials"
+      });
     }
 
-  } else {
-    res.json({ success: false, errors: "Wrong Email Id" });
+    const passCompare = await bcrypt.compare(req.body.password, user.password);
+
+    if (!passCompare) {
+      return res.status(400).json({
+        success: false,
+        errors: "Invalid credentials"
+      });
+    }
+
+    const data = {
+      user: {
+        id: user.id
+      }
+    };
+
+    const token = jwt.sign(data, process.env.JWT_SECRET);
+
+    res.json({ success: true, token });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 

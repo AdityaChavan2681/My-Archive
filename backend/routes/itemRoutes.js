@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const fetchUser = require("../middleware/auth");
 const {
   getAllItems,
   getItemBySlug,
@@ -11,8 +12,9 @@ const {
 
 router.get("/", getAllItems);
 router.get("/:slug", getItemBySlug);
-router.post("/", createItem);
-router.put("/:slug", updateItem);
-router.delete("/:slug", deleteItem);
+
+router.post("/", fetchUser, createItem);
+router.put("/:id", fetchUser, updateItem);
+router.delete("/:id", fetchUser, deleteItem);
 
 module.exports = router;
