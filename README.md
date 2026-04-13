@@ -4,7 +4,7 @@
 
 My Archive is a full-stack application designed to explore and organize lesser-known historical archives such as ships, buildings, and other overlooked subjects.
 
-🚀 Built as a backend-focused system demonstrating full CRUD operations, scalable API design, and database-driven architecture using MongoDB.
+🚀 Built as a backend-focused system demonstrating secure full CRUD operations, authentication, scalable API design, and database-driven architecture using MongoDB.
 
 ---
 
@@ -12,7 +12,7 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 - Backend: Node.js, Express.js  
 - Frontend: React.js  
 - Database: MongoDB with Mongoose (implemented)
-- Authentication: JWT  
+- Authentication: JWT + bcrypt
 - File Handling: Multer  
 
 ---
@@ -28,11 +28,15 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 - Server-side pagination, filtering, and search using database queries
 - Seed script for initializing archive data
 - API support for full CRUD operations (POST, GET, PUT, DELETE) with validation
+- Secure authentication using JWT and bcrypt
+- Protected API routes for creating, updating, and deleting archive items
 
 ---
 
 ## 🧠 Backend Highlights
 - JWT-based authentication flow
+- Password hashing using bcrypt for secure credential storage
+- Middleware-based route protection for restricted operations
 - Express-based REST API structure
 - Multer image upload handling
 - Modular full-stack structure with frontend, backend, and admin separation
@@ -91,7 +95,7 @@ GET /api/items?page=1&limit=2
 
 ### ⚙️ Description
 
-This API supports archive item retrieval, search, pagination, and creation using MongoDB and Mongoose.
+This API supports full CRUD operations, authentication, search, filtering, and pagination using MongoDB and Mongoose.
 
 ## 🔧 Additional API Endpoints
 
@@ -101,10 +105,12 @@ GET /api/items/:slug
 ```
 
 ### Create Item
+
 ```bash
 POST /api/items
+```
 
-
+```json
 {
   "title": "Ancient Harbor Map",
   "slug": "ancient-harbor-map",
@@ -117,7 +123,9 @@ POST /api/items
 
 ```bash
 PUT /api/items/:slug
+```
 
+```json
 {
   "title": "Updated Ship Record",
   "summary": "Updated summary",
@@ -127,20 +135,31 @@ PUT /api/items/:slug
 }
 ```
 
-✔ Tested using Postman with successful 200 OK response
-
 ### Delete Item
+
 ```bash
 DELETE /api/items/:slug
 ```
 
-```
+```bash
 DELETE /api/items/old-naval-vessel
 ```
 
+## 🔐 Authentication Endpoints
 
-✔ Tested using Postman with successful 200 OK response
-✔ Verified deletion by sending GET /api/items/:slug, which returned 404 Not Found
+### Signup
+
+```bash
+POST /api/auth/signup
+```
+
+### Login
+
+```bash
+POST /api/auth/login
+```
+
+Protected routes (POST, PUT, DELETE) require a valid JWT in the `auth-token` header.
 
 🔎 Additional Examples
 
@@ -222,6 +241,9 @@ npm start
 - ✅ MongoDB integration completed
 - ✅ Backend API migrated from mock data to database
 - ✅ Filtering, search, and pagination implemented at database level
+- ✅ Full CRUD operations implemented
+- ✅ Authentication system implemented (JWT + bcrypt)
+- ✅ Protected routes for secure data operations
 
 ## 🔄 CRUD Progress
 
@@ -232,9 +254,9 @@ npm start
 
 ## 🔜 Next Steps
 
-- Add route protection using JWT
 - Move remaining mock-data-based endpoints to MongoDB queries
 - Improve validation and input sanitization
+- Add role-based access control (admin vs user)
 - Enhance admin features for better data control
 
 ## ⚙️ Project Direction
