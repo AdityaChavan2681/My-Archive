@@ -1,4 +1,4 @@
-# 🧠 My Archive - Backend-Driven Historical Data Platform
+# 🧠 My Archive - Backend-First Full Stack Archive Platform
 
 ## 📌 Overview
 
