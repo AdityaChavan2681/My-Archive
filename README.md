@@ -18,18 +18,19 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 ---
 
 ## 🚀 Features
-- Structured data modeling for historical entities (ships, buildings, etc.)  
+- Structured data modeling for historical entities such as ships, buildings, and other archive subjects  
 - RESTful API design for backend operations  
 - Image upload handling using Multer  
-- Admin dashboard for managing entries  
+- Authenticated admin dashboard for managing archive entries  
+- Archive entry creation flow through admin form with MongoDB persistence  
 - Categorized frontend interface (Ships, Buildings, Others)  
 - Scalable architecture for future extensions  
-- MongoDB integration with Mongoose for persistent data storage
-- Server-side pagination, filtering, and search using database queries
-- Seed script for initializing archive data
-- API support for full CRUD operations (POST, GET, PUT, DELETE) with validation
-- Secure authentication using JWT and bcrypt
-- Protected API routes for creating, updating, and deleting archive items
+- MongoDB integration with Mongoose for persistent data storage  
+- Server-side pagination, filtering, and search using database queries  
+- Seed script for initializing archive data  
+- API support for full CRUD operations (POST, GET, PUT, DELETE) with validation  
+- Secure authentication using JWT and bcrypt  
+- Protected API routes for creating, updating, and deleting archive items 
 
 ---
 
@@ -51,13 +52,20 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 
 ## 🧪 API Testing
 
-All endpoints have been tested using Postman:
+Core API endpoints were tested using Postman:
 
 - POST → returns 201 Created
 - GET → returns paginated results
 - PUT → successfully updates items (200 OK)
 - DELETE → successfully removes items (200 OK)
 - GET by deleted slug → returns 404 Not Found
+
+The admin archive creation flow was also tested end to end by:
+
+- creating an authenticated user
+- logging into the admin portal
+- submitting archive form data with image upload
+- verifying the saved record through `GET /api/items?page=1&limit=10`
 
 
 ## 🔌 API Example (MongoDB)
@@ -177,7 +185,7 @@ POST /api/items
 
 Headers:
 ```http
-Authorization: Bearer <your_jwt_token>
+auth-token: <your_jwt_token>
 ```
 
 Body:
@@ -253,7 +261,7 @@ npm start
 ```bash
 cd admin
 npm install
-npm start
+npm run dev
 ```
 
 ## 📸 Screenshots
@@ -272,6 +280,8 @@ npm start
 - ✅ Full CRUD operations implemented
 - ✅ Authentication system implemented (JWT + bcrypt)
 - ✅ Protected routes for secure data operations
+- ✅ Admin archive entry creation integrated with protected backend API
+- ✅ Manual end-to-end testing completed for admin login, form submission, image upload, and MongoDB persistence
 
 ## 🔄 CRUD Progress
 
@@ -282,14 +292,15 @@ npm start
 
 ## 🔜 Next Steps
 
-- Move remaining mock-data-based endpoints to MongoDB queries
+- Add admin delete and edit workflows for archive entries
+- Move remaining mock-data-based endpoints to MongoDB-backed queries
 - Improve validation and input sanitization
 - Add role-based access control (admin vs user)
-- Enhance admin features for better data control
+- Continue integrating public frontend views with live archive data
 
 ## ⚙️ Project Direction
 
-The project has evolved from an initial mock-data-based backend to a fully database-driven system using MongoDB and Mongoose. The current focus is on expanding backend capabilities, implementing full CRUD operations, and strengthening authentication and data management workflows.
+The project has evolved from an initial mock-data-based backend to a fully database-driven system using MongoDB and Mongoose. The current focus is on strengthening protected backend workflows and incrementally integrating the admin and frontend interfaces with the archive API in a clear, explainable way.
 
 ## 💭 Reflection
 
