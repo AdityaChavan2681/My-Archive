@@ -1,53 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import './ListProduct.css';
-import cross_icon from '../../assets/cross_icon.png'
+import { fetchArchiveItems } from '../../api';
 
 
 const ListProduct = () => {
-
   const [allproducts, setAllProducts] = useState([]);
+  const [error, setError] = useState("");
 
   const fetchInfo = async () => {
-    await fetch('http://localhost:3000/allproducts').then((res) => res.json()).then((data) => { setAllProducts(data) });
-  }
+    const data = await fetchArchiveItems();
+    setAllProducts(data.items || []);
+  };
 
   useEffect(() => {
-    fetchInfo();
-  }, [])
-
-  const remove_product = async (id) => {
-    await fetch('http://localhost:3000/removeproduct', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: id })
-    })
-    await fetchInfo();
-  }
+    fetchInfo().catch((requestError) => setError(requestError.message));
+  }, []);
 
   return (
     <div className='list-product'>
-      <h1>All Products List</h1>
+      <h1>Archive Entry List</h1>
       <div className="listproduct-format-main">
-        <p>Marvels</p>
+        <p>Preview</p>
         <p>Title</p>
-        <p>Dimensions</p>
-        <p>Description</p>
+        <p>Summary</p>
+        <p>Status</p>
         <p>Category</p>
-        <p>Remove</p>
+        <p>Slug</p>
       </div>
       <div className="listproduct-allproducts">
+        {error ? <p>{error}</p> : null}
         <hr />
         {allproducts.map((product, index) => {
+          const imageUrl = product.images?.[0]?.url || '';
+
           return <> <div key={index} className="listproduct-format-main listproduct-format">
-            <img src={product.image} alt="" className="listproduct-product-icon" />
-            <p>{product.name}</p>
-            <p>${product.old_price}</p>
-            <p>${product.new_price}</p>
+            <img src={imageUrl} alt="" className="listproduct-product-icon" />
+            <p>{product.title}</p>
+            <p>{product.summary || '-'}</p>
+            <p>{product.status}</p>
             <p>{product.category}</p>
-            <img onClick={() => { remove_product(product.id) }} className='listproduct-remove-icon' src={cross_icon} alt="" />
+            <p>{product.slug}</p>
           </div>
             <hr />
           </>

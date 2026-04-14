@@ -1,0 +1,3 @@
+backend bug: route -> controller -> model -> middleware
+admin bug: form -> API call -> backend route -> response handling
+frontend display bug: page -> context/API client -> component -> backend response shape

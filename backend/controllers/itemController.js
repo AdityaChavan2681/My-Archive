@@ -44,6 +44,24 @@
 
 const ArchiveItem = require("../models/ArchiveItem");
 
+const slugify = (value = "") =>
+  String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const normalizeTags = (tags) => {
+  if (Array.isArray(tags)) {
+    return tags.map((tag) => String(tag).trim()).filter(Boolean);
+  }
+
+  return String(tags || "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+};
+
 const getAllItems = async (req, res) => {
   try {
     const { category, search, page = 1, limit = 2 } = req.query;
@@ -101,17 +119,18 @@ const getItemBySlug = async (req, res) => {
 
 const createItem = async (req, res) => {
   try {
-    const {
-      title,
-      slug,
-      summary,
-      content,
-      category,
-      tags,
-      images,
-      references,
-      status
-    } = req.body;
+    const title = String(req.body.title || req.body.name || "").trim();
+    const slug = String(req.body.slug || slugify(title)).trim();
+    const category = String(req.body.category || "").trim();
+    const summary = String(req.body.summary || req.body.description || req.body.old_price || "").trim();
+    const content = String(req.body.content || req.body.new_price || req.body.description || "").trim();
+    const status = String(req.body.status || "draft").trim();
+    const tags = normalizeTags(req.body.tags);
+    const references = Array.isArray(req.body.references) ? req.body.references : [];
+    const image = String(req.body.image || "").trim();
+    const images = Array.isArray(req.body.images) && req.body.images.length
+      ? req.body.images
+      : (image ? [{ url: image }] : []);
 
     if (!title || !slug || !category) {
       return res.status(400).json({
@@ -131,9 +150,9 @@ const createItem = async (req, res) => {
       summary,
       content,
       category,
-      tags: tags || [],
-      images: images || [],
-      references: references || [],
+      tags,
+      images,
+      references,
       status: status || "draft"
     });
 
