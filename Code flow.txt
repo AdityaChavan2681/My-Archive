@@ -1,3 +1,332 @@
-backend bug: route -> controller -> model -> middleware
-admin bug: form -> API call -> backend route -> response handling
-frontend display bug: page -> context/API client -> component -> backend response shape
+MY ARCHIVE - CODE FLOW GUIDE
+========================================
+
+Purpose
+-------
+This file is a learning map for the project.
+It shows:
+1. File-to-file flow for the main features
+2. Responsibility of each layer or file group
+3. Current implemented flows
+4. Current legacy areas still waiting for integration
+
+
+HIGH-LEVEL PROJECT STRUCTURE
+----------------------------
+
+backend/
+- API routes
+- auth flow
+- archive item CRUD
+- image upload
+- MongoDB persistence
+
+admin/
+- authenticated admin login
+- archive create form
+- archive list view
+- API client for protected admin actions
+
+frontend/
+- public archive UI
+- currently still contains legacy e-commerce/product/cart flow
+- next major milestone is replacing legacy reads with live archive reads
+
+
+LAYER RESPONSIBILITIES
+----------------------
+
+1. Backend entry and infrastructure
+- backend/index.js
+  Loads env vars, starts Express, connects MongoDB, mounts API routes, and exposes upload/static image endpoints.
+
+2. Backend routes
+- backend/routes/authRoutes.js
+  Maps signup/login endpoints to auth controller functions.
+
+- backend/routes/itemRoutes.js
+  Maps archive item endpoints to item controller functions and applies auth middleware for protected writes.
+
+3. Backend middleware
+- backend/middleware/auth.js
+  Reads auth-token header, verifies JWT, and allows or rejects protected requests.
+
+4. Backend controllers
+- backend/controllers/authController.js
+  Handles signup/login, password hashing, password comparison, and JWT generation.
+
+- backend/controllers/itemController.js
+  Handles archive item list/read/create/update/delete logic, request validation, slug generation, and MongoDB queries.
+
+5. Backend models
+- backend/models/User.js
+  Defines user schema for authentication data.
+
+- backend/models/ArchiveItem.js
+  Defines archive item schema for stored archive content.
+
+6. Admin app entry and routing
+- admin/src/App.jsx
+  Mounts the admin shell.
+
+- admin/src/Pages/Admin/Admin.jsx
+  Protects the admin area by checking local token state and routing to Add Entry / Archive List pages.
+
+7. Admin API layer
+- admin/src/api.js
+  Central place for admin login, image upload, archive create request, and archive list fetch.
+
+8. Admin feature views
+- admin/src/Components/AuthPanel/AuthPanel.jsx
+  Login form for admin access.
+
+- admin/src/Components/AddProduct/AddProduct.jsx
+  Archive creation form.
+
+- admin/src/Components/ListProduct/ListProduct.jsx
+  Archive list view backed by GET /api/items.
+
+9. Public frontend entry and routing
+- frontend/src/App.js
+  Declares the main public routes.
+
+- frontend/src/Context/AllContext.jsx
+  Currently still holds legacy product/cart data fetching and cart actions.
+
+- frontend/src/Pages/All.jsx
+- frontend/src/Pages/AllCategory.jsx
+- frontend/src/Pages/Product.jsx
+  Public-facing views that will later consume live archive data.
+
+
+CURRENT IMPLEMENTED FLOWS
+-------------------------
+
+FLOW 1 - AUTH SIGNUP
+--------------------
+Goal:
+Create a user who can access protected admin/backend actions.
+
+File-to-file flow:
+backend/routes/authRoutes.js
+-> backend/controllers/authController.js
+-> backend/models/User.js
+-> MongoDB
+-> authController response with JWT
+
+
+FLOW 2 - AUTH LOGIN
+-------------------
+Goal:
+Authenticate admin user and return token for protected routes.
+
+File-to-file flow:
+admin/src/Components/AuthPanel/AuthPanel.jsx
+-> admin/src/api.js (loginAdmin)
+-> backend/routes/authRoutes.js
+-> backend/controllers/authController.js
+-> backend/models/User.js
+-> MongoDB password lookup
+-> authController response with JWT
+-> admin/src/api.js stores token
+-> Admin.jsx unlocks admin area
+
+
+FLOW 3 - ADMIN CREATE ARCHIVE ENTRY
+-----------------------------------
+Goal:
+Admin fills archive form, uploads image, sends protected create request, saves archive item in MongoDB.
+
+File-to-file flow:
+admin/src/Pages/Admin/Admin.jsx
+-> admin/src/Components/AddProduct/AddProduct.jsx
+-> admin/src/api.js (uploadArchiveImage)
+-> backend/index.js POST /upload
+-> upload/images folder
+-> admin/src/api.js (createArchiveItem)
+-> backend/routes/itemRoutes.js POST /
+-> backend/middleware/auth.js
+-> backend/controllers/itemController.js createItem
+-> backend/models/ArchiveItem.js
+-> MongoDB
+-> itemController response
+-> AddProduct.jsx success message
+
+Fields handled in AddProduct.jsx:
+- title
+- slug
+- category
+- summary
+- content
+- tags
+- status
+- image
+
+
+FLOW 4 - ADMIN LIST ARCHIVE ENTRIES
+-----------------------------------
+Goal:
+Admin sees saved archive entries after create or refresh.
+
+File-to-file flow:
+admin/src/Components/ListProduct/ListProduct.jsx
+-> admin/src/api.js (fetchArchiveItems)
+-> backend/routes/itemRoutes.js GET /
+-> backend/controllers/itemController.js getAllItems
+-> backend/models/ArchiveItem.js
+-> MongoDB
+-> ListProduct.jsx renders result
+
+
+FLOW 5 - BACKEND READ API
+-------------------------
+Goal:
+Return archive items for API consumers.
+
+File-to-file flow:
+backend/routes/itemRoutes.js GET /
+-> backend/controllers/itemController.js getAllItems
+-> backend/models/ArchiveItem.js
+-> MongoDB
+-> JSON response
+
+Supports:
+- page
+- limit
+- category
+- search
+
+Response shape:
+- items
+- totalResults
+- currentPage
+- totalPages
+
+
+FLOW 6 - BACKEND GET SINGLE ITEM
+--------------------------------
+Goal:
+Return one archive item by slug.
+
+File-to-file flow:
+backend/routes/itemRoutes.js GET /:slug
+-> backend/controllers/itemController.js getItemBySlug
+-> backend/models/ArchiveItem.js
+-> MongoDB
+-> JSON response or 404
+
+
+FLOW 7 - BACKEND UPDATE ITEM
+----------------------------
+Current file-to-file flow:
+backend/routes/itemRoutes.js PUT /:id
+-> backend/middleware/auth.js
+-> backend/controllers/itemController.js updateItem
+-> backend/models/ArchiveItem.js
+-> MongoDB
+
+Current issue:
+- itemController reads req.params.slug
+- route currently uses :id
+- this mismatch should be fixed before admin edit flow is built
+
+
+FLOW 8 - BACKEND DELETE ITEM
+----------------------------
+Current file-to-file flow:
+backend/routes/itemRoutes.js DELETE /:id
+-> backend/middleware/auth.js
+-> backend/controllers/itemController.js deleteItem
+-> backend/models/ArchiveItem.js
+-> MongoDB
+
+Current issue:
+- itemController reads req.params.slug
+- route currently uses :id
+- this mismatch should be fixed before admin delete flow is built
+
+
+CURRENT LEGACY / PARTIALLY MIGRATED FLOWS
+-----------------------------------------
+
+PUBLIC FRONTEND LEGACY FLOW
+---------------------------
+Current file-to-file flow:
+frontend/src/Context/AllContext.jsx
+-> fetch("http://localhost:3000/allproducts")
+-> expects legacy product/cart structure
+
+Problems:
+- frontend still expects product-style fields like name/new_price/old_price
+- frontend still contains cart-related endpoints that do not belong to current archive scope
+- App.js still includes old LoginSignup and Cart routes
+- Product page still finds product by legacy numeric id
+
+Meaning:
+- public frontend integration is the next major milestone
+- public read flow is not yet fully aligned with current archive API
+
+
+MOCK-BASED HOMEPAGE HELPERS
+---------------------------
+Current backend/index.js still exposes:
+- GET /newcollections
+- GET /popularinships
+
+These use:
+- backend/data/mockItems.js
+
+Meaning:
+- homepage helper endpoints are still mock-based
+- later they should be replaced or rewritten to read from MongoDB-backed archive items
+
+
+DEBUGGING MAP
+-------------
+
+If backend create fails:
+route -> auth middleware -> controller validation -> model -> MongoDB
+
+If admin form submission fails:
+form state -> upload request -> protected create request -> backend route -> response handling
+
+If admin list fails:
+list component -> admin api client -> GET /api/items -> controller response shape
+
+If public archive display fails:
+page -> context / API layer -> component -> backend response shape
+
+
+NEXT RECOMMENDED FLOWS TO BUILD
+-------------------------------
+
+1. Public archive read integration
+- homepage from live archive items
+- category pages from live archive items
+- detail page from GET /api/items/:slug
+
+2. Admin delete workflow
+- fix route/controller slug mismatch first
+- add delete action in admin list
+
+3. Admin update workflow
+- fix route/controller slug mismatch first
+- add edit form or inline edit mode
+
+4. Cleanup
+- remove remaining cart/login leftovers from public frontend
+- replace mock-based helper endpoints with MongoDB-backed queries
+- improve validation and input sanitization
+
+
+SHORT FLOW SUMMARY
+------------------
+
+Backend bug:
+route -> middleware -> controller -> model -> database -> response
+
+Admin bug:
+form -> admin api client -> backend route -> middleware -> controller -> response handling
+
+Public frontend bug:
+page -> context/API client -> component -> backend response shape
