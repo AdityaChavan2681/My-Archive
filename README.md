@@ -30,7 +30,8 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 - Seed script for initializing archive data  
 - API support for full CRUD operations (POST, GET, PUT, DELETE) with validation  
 - Secure authentication using JWT and bcrypt  
-- Protected API routes for creating, updating, and deleting archive items 
+- Protected API routes for creating, updating, and deleting archive items
+- Public archive views load live backend data for category browsing, archive detail pages, and related archive entries
 
 ---
 
@@ -66,6 +67,12 @@ The admin archive creation flow was also tested end to end by:
 - logging into the admin portal
 - submitting archive form data with image upload
 - verifying the saved record through `GET /api/items?page=1&limit=10`
+
+Public frontend integration was also tested by:
+
+- verifying category page rendering against live backend data
+- verifying archive detail page loading by slug/id
+- verifying related archive entries rendering by category
 
 
 ## 🔌 API Example (MongoDB)
@@ -282,6 +289,9 @@ npm run dev
 - ✅ Protected routes for secure data operations
 - ✅ Admin archive entry creation integrated with protected backend API
 - ✅ Manual end-to-end testing completed for admin login, form submission, image upload, and MongoDB persistence
+- ✅ Public category views integrated with live archive data
+- ✅ Archive detail pages load live archive data from backend
+- ✅ Related archive entries fetched dynamically by category
 
 ## 🔄 CRUD Progress
 
@@ -293,10 +303,9 @@ npm run dev
 ## 🔜 Next Steps
 
 - Add admin delete and edit workflows for archive entries
-- Move remaining mock-data-based endpoints to MongoDB-backed queries
 - Improve validation and input sanitization
 - Add role-based access control (admin vs user)
-- Continue integrating public frontend views with live archive data
+- Refine remaining inherited e-commerce UI sections into archive-specific presentation
 
 ## ⚙️ Project Direction
 
