@@ -30,9 +30,7 @@ function App() {
             path="/others"
             element={<AllCategory banner={kid_banner} category="others" />}
           />
-          <Route path="product" element={<Product />}>
-            <Route path=":productId" element={<Product />}></Route>
-          </Route>
+          <Route path="/product/:slugOrId" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<LoginSignup />} />
         </Routes>

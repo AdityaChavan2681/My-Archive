@@ -9,8 +9,7 @@ export const Navbar = () => {
   const menuRef = useRef();
 
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const category = params.get("category") || "all";
+  const path = location.pathname;
 
   const dropdown_toggle = (e) => {
     menuRef.current.classList.toggle("nav-menu-visible");
@@ -36,28 +35,28 @@ export const Navbar = () => {
           <Link style={{ textDecoration: "none" }} to="/">
             All
           </Link>
-          {category === "all" ? <hr /> : null}
+          {path === "/" ? <hr /> : null}
         </li>
 
         <li>
-          <Link style={{ textDecoration: "none" }} to="/?category=buildings">
+          <Link style={{ textDecoration: "none" }} to="/buildings">
             Buildings
           </Link>
-          {category === "buildings" ? <hr /> : null}
+          {path === "/buildings" ? <hr /> : null}
         </li>
 
         <li>
-          <Link style={{ textDecoration: "none" }} to="/?category=ships">
+          <Link style={{ textDecoration: "none" }} to="/ships">
             Ships
           </Link>
-          {category === "ships" ? <hr /> : null}
+          {path === "/ships" ? <hr /> : null}
         </li>
 
         <li>
-          <Link style={{ textDecoration: "none" }} to="/?category=others">
+          <Link style={{ textDecoration: "none" }} to="/others">
             Others
           </Link>
-          {category === "others" ? <hr /> : null}
+          {path === "/others" ? <hr /> : null}
         </li>
       </ul>
     </div>

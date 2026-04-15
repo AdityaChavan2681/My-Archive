@@ -1,4 +1,5 @@
 import React, { useState, createContext, useEffect } from "react";
+import { frontendApi } from "../api";
 
 export const AllContext = createContext(null);
 
@@ -14,9 +15,15 @@ const AllContextProvider = (props) => {
 
   const [all_product,setAll_Product] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(()=>{
-    fetch('http://localhost:3000/allproducts').then((response)=>response.json()).then((data)=>setAll_Product(data))
+    frontendApi
+      .fetchItems("?limit=50")
+      .then((response) => setAll_Product(response.data))
+      .catch((requestError) => setError(requestError.message))
+      .finally(() => setIsLoading(false));
     if(localStorage.getItem('auth-token')){
       fetch('http://localhost:3000/getCart',{
         method:'POST',
@@ -92,6 +99,8 @@ const AllContextProvider = (props) => {
     getTotalCartItems,
     getTotalCartAmount,
     all_product,
+    isLoading,
+    error,
     cartItems,
     addToCart,
     removeFromCart,
