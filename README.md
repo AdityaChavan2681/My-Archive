@@ -35,45 +35,11 @@ My Archive is a full-stack application designed to explore and organize lesser-k
 
 ---
 
-## 🧠 Backend Highlights
-- JWT-based authentication flow
-- Password hashing using bcrypt for secure credential storage
-- Middleware-based route protection for restricted operations
-- Express-based REST API structure
-- Multer image upload handling
-- Modular full-stack structure with frontend, backend, and admin separation
-- Refactored an existing e-commerce codebase into a domain-specific archive platform, improving structure, API design, and scalability.
-- Successfully transitioned from e-commerce data flow to archive-specific data modeling
-- MongoDB integration using Mongoose models
-- Database-driven filtering, search, and pagination
-- Migration from mock data to persistent storage
-- Archive item creation endpoint with validation and duplicate slug protection
-- Proper HTTP status code handling (200, 201, 400, 404, 500)
-- Error handling for invalid input and missing resources
+## 🧪 Testing
 
-## 🧪 API Testing
-
-Core API endpoints were tested using Postman:
-
-- POST → returns 201 Created
-- GET → returns paginated results
-- PUT → successfully updates items (200 OK)
-- DELETE → successfully removes items (200 OK)
-- GET by deleted slug → returns 404 Not Found
-
-The admin archive creation flow was also tested end to end by:
-
-- creating an authenticated user
-- logging into the admin portal
-- submitting archive form data with image upload
-- verifying the saved record through `GET /api/items?page=1&limit=10`
-
-Public frontend integration was also tested by:
-
-- verifying category page rendering against live backend data
-- verifying archive detail page loading by slug/id
-- verifying related archive entries rendering by category
-
+- Verified CRUD API endpoints, pagination, filtering, and search using Postman
+- Tested authenticated admin archive creation with image upload and MongoDB persistence
+- Tested public category browsing, archive detail pages, and related archive entries using live backend data
 
 ## 🔌 API Example (MongoDB)
 
@@ -89,120 +55,28 @@ GET /api/items?page=1&limit=2
 {
   "items": [
     {
-      "_id": "69d48bca3817900069dc680c",
-      "title": "Old Naval Vessel",
-      "slug": "old-naval-vessel",
-      "summary": "Another archive record",
+      "_id": "69e093a05f622b539d58b122",
+      "title": "Ship from the Atlas Miller (c. 1519)",
+      "slug": "ship-from-the-atlas-miller-1519",
+      "summary": "A ship illustration from the Atlas Miller, reflecting early European views of Asian maritime networks and seafaring.",
       "category": "ships",
-      "status": "published",
-      "createdAt": "2026-04-07T04:44:58.279Z"
+      "status": "published"
     }
   ],
-  "totalResults": 3,
+  "totalResults": 4,
   "currentPage": 1,
   "totalPages": 2
 }
 ```
 
+Protected routes:
+- `POST /api/items`
+- `PUT /api/items/:slug`
+- `DELETE /api/items/:slug`
 
-### ⚙️ Description
-
-This API supports full CRUD operations, search, filtering, and pagination using MongoDB and Mongoose.
-
-## 🔧 Additional API Endpoints
-
-### Get Single Item
-
-```bash
-GET /api/items/:slug
-```
-
-### Create Item
-
-```bash
-POST /api/items
-```
-
-```json
-{
-  "title": "Ancient Harbor Map",
-  "slug": "ancient-harbor-map",
-  "category": "maps"
-}
-```
-
-### Update Item
-
-
-```bash
-PUT /api/items/:slug
-```
-
-```json
-{
-  "title": "Updated Ship Record",
-  "summary": "Updated summary",
-  "content": "Updated content",
-  "category": "ships",
-  "status": "published"
-}
-```
-
-### Delete Item
-
-```bash
-DELETE /api/items/:slug
-```
-
-```bash
-DELETE /api/items/old-naval-vessel
-```
-
-## 🔐 Authentication Endpoints
-
-### Signup
-
-```bash
-POST /api/auth/signup
-```
-
-### Login
-
-```bash
-POST /api/auth/login
-```
-
-Protected routes (POST, PUT, DELETE) require a valid JWT in the `auth-token` header.
-
-### 🔐 Using Protected Routes
-
-To access protected endpoints (create, update, delete), include your JWT token in the request headers.
-
-To use protected routes:
-
-1. Signup → `/api/auth/signup`
-2. Login → `/api/auth/login` (get JWT)
-3. Use token in request headers
-
-#### Example: Create Item with Authentication
-
-```bash
-POST /api/items
-```
-
-Headers:
-```http
-auth-token: <your_jwt_token>
-```
-
-Body:
-```json
-{
-  "title": "Authenticated Item",
-  "slug": "authenticated-item",
-  "category": "maps"
-}
-```
+Authentication:
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
 
 🔎 Additional Examples
 
@@ -227,7 +101,6 @@ GET /api/items?page=2&limit=2
 - MongoDB Community Server installed locally
 - MongoDB Compass installed (optional, for viewing database records visually)
 - Project dependencies installed
-
 
 ### Backend
 ```bash
@@ -272,33 +145,11 @@ npm run dev
 ```
 
 ## 📸 Screenshots
-### 🏠 Homepage
-<img width="1919" height="925" alt="image" src="https://github.com/user-attachments/assets/89501bb7-5056-4347-808b-da78502f938f" />
 
-### 🔌 API Response Preview
+### 🏛️ Archive Detail View
 
-<img width="764" height="976" alt="image" src="https://github.com/user-attachments/assets/da013e04-a66c-4c30-b150-ad384cd30179" />
+<img width="1919" height="967" alt="image" src="https://github.com/user-attachments/assets/d44edb9f-e18f-433c-9aab-5ab66f44a6ab" />
 
-## 📊 Current Status
-
-- ✅ MongoDB integration completed
-- ✅ Backend API migrated from mock data to database
-- ✅ Filtering, search, and pagination implemented at database level
-- ✅ Full CRUD operations implemented
-- ✅ Authentication system implemented (JWT + bcrypt)
-- ✅ Protected routes for secure data operations
-- ✅ Admin archive entry creation integrated with protected backend API
-- ✅ Manual end-to-end testing completed for admin login, form submission, image upload, and MongoDB persistence
-- ✅ Public category views integrated with live archive data
-- ✅ Archive detail pages load live archive data from backend
-- ✅ Related archive entries fetched dynamically by category
-
-## 🔄 CRUD Progress
-
-- ✅ Create (POST /api/items)
-- ✅ Read (GET /api/items, GET /api/items/:slug)
-- ✅ Update (PUT /api/items/:slug)
-- ✅ Delete (DELETE /api/items/:slug)
 
 ## 🔜 Next Steps
 
@@ -307,10 +158,3 @@ npm run dev
 - Add role-based access control (admin vs user)
 - Refine remaining inherited e-commerce UI sections into archive-specific presentation
 
-## ⚙️ Project Direction
-
-The project has evolved from an initial mock-data-based backend to a fully database-driven system using MongoDB and Mongoose. The current focus is on strengthening protected backend workflows and incrementally integrating the admin and frontend interfaces with the archive API in a clear, explainable way.
-
-## 💭 Reflection
-
-This project is designed to strengthen my backend development skills, focusing on system design and real-world application flow and also to strengthen my understanding of full-stack architecture, debugging across different environments to build systems grounded in meaningful data.
