@@ -4,14 +4,18 @@ import { frontendApi } from "../../api";
 
 const ProductDisplay = (props) => {
   const { product } = props;
+  const imageUrl = frontendApi.getImageUrl(product.image);
 
   return (
     <div className="productdisplay">
       <div className="productdisplay-left">
-        <div className="productdisplay-img">
+        <div
+          className="productdisplay-img"
+          style={imageUrl ? { "--product-image": `url(${imageUrl})` } : undefined}
+        >
           <img
             className="productdisplay-main-img"
-            src={frontendApi.getImageUrl(product.image)}
+            src={imageUrl}
             alt={product.title}
           />
         </div>

@@ -2,41 +2,52 @@
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   color: #1f2937;
 }
-.item img{
+.item-card {
+  text-decoration: none;
+  color: inherit;
+}
+.item-media{
   width: 280px;
-  height: 220px;
+  min-height: 320px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
+  background: #f8fafc;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+}
+.item-background-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 14px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #f8fafc;
+}
+.item-overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 20px 18px 18px;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.08));
 }
 .item p {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937;
+  color: #f8fafc;
 }
 .item small {
-  color: #475569;
+  display: block;
+  margin-top: 8px;
+  color: rgba(248, 250, 252, 0.88);
   font-size: 14px;
   line-height: 1.5;
-}
-.item-prices {
-  display: flex;
-  gap: 20px;
-}
-.item-price-new {
-  color: #374151;
-  font-size: 18px;
-}
-.item-price-old {
-  color: #8c8c8c;
-  font-size: 18px;
-  font-weight: 500;
 }
 .item:hover {
   transform: translateY(-4px);
@@ -47,12 +58,9 @@
     width: 220px;
     font-size: 14px;
   }
-  .item img{
+  .item-media{
     width: 220px;
-    height: 180px;
-  }
-  .item-price-old{
-    font-size: 14px;
+    min-height: 270px;
   }
   .item p{
     font-size: 18px;
@@ -63,12 +71,9 @@
     width: 170px;
     font-size: 13px;
   }
-  .item img{
+  .item-media{
     width: 170px;
-    height: 140px;
-  }
-  .item-price-old{
-    font-size: 13px;
+    min-height: 220px;
   }
   .item p{
     font-size: 16px;
@@ -79,12 +84,9 @@
     width: 120px;
     font-size: 12px;
   }
-  .item img{
+  .item-media{
     width: 120px;
-    height: 100px;
-  }
-  .item-price-old{
-    font-size: 12px;
+    min-height: 170px;
   }
   .item p{
     font-size: 14px;
@@ -92,13 +94,16 @@
   .item small{
     font-size: 12px;
   }
+  .item-overlay {
+    padding: 14px 12px 12px;
+  }
 }
 @media(max-width:500px){
   .item{
     width: 160px;
   }
-  .item img{
+  .item-media{
     width: 160px;
-    height: 130px;
+    min-height: 210px;
   }
 }
