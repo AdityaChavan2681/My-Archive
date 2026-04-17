@@ -4,42 +4,76 @@
 
 My Archive is a full-stack application designed to explore and organize lesser-known historical archives such as ships, buildings, and other overlooked subjects.
 
-🚀 Built as a backend-focused system demonstrating secure full CRUD operations, authentication, scalable API design, and database-driven architecture using MongoDB.
+Built with a backend-first approach, the project focuses on API design, database-driven workflows, and secure authentication while integrating a responsive frontend interface.
 
 ---
 
-## 🛠️ Tech Stack
-- Backend: Node.js, Express.js  
-- Frontend: React.js  
-- Database: MongoDB with Mongoose (implemented)
-- Authentication: JWT + bcrypt
-- File Handling: Multer  
+## 🏗️ Architecture Overview
+
+The application follows a backend-first full-stack structure:
+
+- **backend/** → Handles API routes, controllers, authentication, and database logic  
+- **admin/** → Protected dashboard for managing archive entries  
+- **frontend/** → Public interface for browsing and exploring archives  
+
+### 🔄 Request Flow
+1. User/Admin interacts with frontend or admin UI  
+2. React sends request to Express API  
+3. Routes forward requests to controllers  
+4. Controllers validate input and interact with MongoDB via Mongoose  
+5. API returns structured JSON response  
+6. UI renders archive listings, details, or admin results  
+
+---
+
+## 🧠 Key Engineering Decisions
+
+- Adopted a **backend-first approach** to prioritize API design, data modeling, and scalability  
+- Used **MongoDB with Mongoose** for flexible schema design for varied archive entities  
+- Implemented **JWT-based authentication** to secure admin workflows  
+- Designed **pagination, filtering, and search at query level** for efficient data handling  
+- Separated **public archive views and admin workflows** for cleaner system structure  
 
 ---
 
 ## 🚀 Features
-- Structured data modeling for historical entities such as ships, buildings, and other archive subjects  
-- RESTful API design for backend operations  
-- Image upload handling using Multer  
-- Authenticated admin dashboard for managing archive entries  
-- Archive entry creation flow through admin form with MongoDB persistence  
-- Categorized frontend interface (Ships, Buildings, Others)  
-- Scalable architecture for future extensions  
-- MongoDB integration with Mongoose for persistent data storage  
-- Server-side pagination, filtering, and search using database queries  
-- Seed script for initializing archive data  
-- API support for full CRUD operations (POST, GET, PUT, DELETE) with validation  
+
+- RESTful API design with full CRUD operations and protected routes  
 - Secure authentication using JWT and bcrypt  
-- Protected API routes for creating, updating, and deleting archive items
-- Public archive views load live backend data for category browsing, archive detail pages, and related archive entries
+- Protected admin dashboard for archive management  
+- Image upload handling using Multer  
+- MongoDB integration with Mongoose for persistent data storage  
+- Server-side pagination, filtering, and search  
+- Categorized frontend interface (Ships, Buildings, Others)  
+- Public archive views with live backend data integration  
+- Scalable backend structure for future extensions  
+
+---
+
+## 🧩 Challenges Solved
+
+- Migrated backend from mock data to **MongoDB with real query-based filtering and pagination**
+- Resolved **image upload issues** by aligning Multer configuration with form-data inputs
+- Refactored backend into **modular structure (routes, controllers, models)**
+- Integrated **live backend APIs with frontend archive views**
+- Implemented **secure protected routes** for admin workflows
+- Refactored an initial e-commerce-style codebase into a domain-specific archive platform
 
 ---
 
 ## 🧪 Testing
 
-- Verified CRUD API endpoints, pagination, filtering, and search using Postman
-- Tested authenticated admin archive creation with image upload and MongoDB persistence
-- Tested public category browsing, archive detail pages, and related archive entries using live backend data
+- Tested CRUD API endpoints, pagination, filtering, and search using Postman  
+- Verified authenticated admin archive creation with image upload and persistence  
+- Performed end-to-end testing of frontend integration with backend APIs
+
+## 🌐 Default Ports
+
+- Backend API → http://localhost:3000  
+- Frontend → http://localhost:3001 (auto-assigned if 3000 is in use)  
+- Admin Dashboard → http://localhost:5173 (Vite default)
+
+Note: The frontend may run on port 3000 or 3001 depending on availability if the backend server is already running.
 
 ## 🔌 API Example (MongoDB)
 
