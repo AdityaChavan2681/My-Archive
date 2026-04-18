@@ -2,23 +2,57 @@ const Users = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 6;
+
 const signup = async (req, res) => {
   try {
-    let check = await Users.findOne({ email: req.body.email });
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const username = String(req.body.username || req.body.name || "").trim();
+    const password = String(req.body.password || "");
 
-    if (check) {
+    if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
-        errors: "User already exists"
+        error: "name, email, and password are required"
       });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    if (username.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: "name must be at least 2 characters long"
+      });
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: "email must be a valid email address"
+      });
+    }
+
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      return res.status(400).json({
+        success: false,
+        error: `password must be at least ${MIN_PASSWORD_LENGTH} characters long`
+      });
+    }
+
+    let check = await Users.findOne({ email });
+
+    if (check) {
+      return res.status(409).json({
+        success: false,
+        error: "User already exists"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new Users({
-      name: req.body.username,
-      email: req.body.email,
+      name: username,
+      email,
       password: hashedPassword,
     });
 
@@ -42,21 +76,38 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    let user = await Users.findOne({ email: req.body.email });
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = String(req.body.password || "");
 
-    if (!user) {
+    if (!email || !password) {
       return res.status(400).json({
         success: false,
-        errors: "Invalid credentials"
+        error: "email and password are required"
       });
     }
 
-    const passCompare = await bcrypt.compare(req.body.password, user.password);
-
-    if (!passCompare) {
+    if (!EMAIL_REGEX.test(email)) {
       return res.status(400).json({
         success: false,
-        errors: "Invalid credentials"
+        error: "email must be a valid email address"
+      });
+    }
+
+    let user = await Users.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid credentials"
+      });
+    }
+
+    const passCompare = await bcrypt.compare(password, user.password);
+
+    if (!passCompare) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid credentials"
       });
     }
 

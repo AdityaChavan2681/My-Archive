@@ -3,6 +3,9 @@ import './AddProduct.css';
 import upload_icon from '../../assets/upload_area.svg';
 import { createArchiveItem, uploadArchiveImage } from '../../api';
 
+const VALID_CATEGORIES = new Set(["ships", "buildings", "others"]);
+const VALID_STATUSES = new Set(["published", "draft"]);
+
 const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,8 +29,47 @@ const AddProduct = () => {
     setProductDetails({...productDetails, [e.target.name]:e.target.value});
   };
 
+  const validateForm = () => {
+    const title = productDetails.title.trim();
+    const slug = productDetails.slug.trim();
+    const summary = productDetails.summary.trim();
+
+    if (!title) {
+      return "title is required";
+    }
+
+    if (title.length < 3) {
+      return "title must be at least 3 characters long";
+    }
+
+    if (slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      return "slug may only contain lowercase letters, numbers, and hyphens";
+    }
+
+    if (!VALID_CATEGORIES.has(productDetails.category)) {
+      return "select a valid archive category";
+    }
+
+    if (!VALID_STATUSES.has(productDetails.status)) {
+      return "select a valid status";
+    }
+
+    if (summary.length > 300) {
+      return "summary must be 300 characters or fewer";
+    }
+
+    return "";
+  };
+
   const Add_Product = async () => {
     setMessage("");
+    const validationError = validateForm();
+
+    if (validationError) {
+      setMessage(validationError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -40,6 +82,11 @@ const AddProduct = () => {
 
       await createArchiveItem({
         ...productDetails,
+        title: productDetails.title.trim(),
+        slug: productDetails.slug.trim(),
+        summary: productDetails.summary.trim(),
+        content: productDetails.content.trim(),
+        tags: productDetails.tags.trim(),
         image: imageUrl,
       });
 

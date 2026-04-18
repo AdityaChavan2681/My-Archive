@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { adminAuth, loginAdmin } from "../../api";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const AuthPanel = ({ onSuccess }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -14,13 +16,38 @@ const AuthPanel = ({ onSuccess }) => {
     }));
   };
 
+  const validateForm = () => {
+    const email = formData.email.trim().toLowerCase();
+    const password = formData.password;
+
+    if (!email || !password) {
+      return "email and password are required";
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      return "enter a valid email address";
+    }
+
+    return "";
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    const validationError = validateForm();
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const response = await loginAdmin(formData);
+      const response = await loginAdmin({
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password
+      });
       adminAuth.setToken(response.token);
       onSuccess?.();
     } catch (requestError) {
