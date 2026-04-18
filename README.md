@@ -40,6 +40,8 @@ The application follows a backend-first full-stack structure:
 
 - RESTful API design with full CRUD operations and protected routes  
 - Secure authentication using JWT and bcrypt  
+- Backend validation for authentication and archive item requests  
+- Lightweight frontend validation in admin login and archive entry forms  
 - Protected admin dashboard for archive management  
 - Image upload handling using Multer  
 - MongoDB integration with Mongoose for persistent data storage  
@@ -66,6 +68,18 @@ The application follows a backend-first full-stack structure:
 - Tested CRUD API endpoints, pagination, filtering, and search using Postman  
 - Verified authenticated admin archive creation with image upload and persistence  
 - Performed end-to-end testing of frontend integration with backend APIs
+- Tested validation flows for admin login and archive entry submission across backend and admin UI
+
+## 🔐 Validation & Error Handling
+
+The application includes both backend and frontend validation to improve data integrity and user experience.
+
+- Server-side validation for authentication requests and archive item payloads
+- Validation for invalid email format, password rules, slug format, category, status, and summary input
+- Lightweight admin UI validation before login and archive creation requests are submitted
+- Structured error responses for invalid credentials and invalid form data
+
+This helps prevent invalid data from being processed and improves reliability across protected workflows.
 
 ## 🌐 Default Ports
 
@@ -188,7 +202,7 @@ npm run dev
 ## 🔜 Next Steps
 
 - Add admin delete and edit workflows for archive entries
-- Improve validation and input sanitization
+- Improve input sanitization and strengthen advanced validation rules
 - Add role-based access control (admin vs user)
 - Refine remaining inherited e-commerce UI sections into archive-specific presentation
 
