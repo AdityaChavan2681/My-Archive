@@ -14,7 +14,7 @@ router.get("/", getAllItems);
 router.get("/:slug", getItemBySlug);
 
 router.post("/", fetchUser, createItem);
-router.put("/:id", fetchUser, updateItem);
-router.delete("/:id", fetchUser, deleteItem);
+router.put("/:slug", fetchUser, updateItem);
+router.delete("/:slug", fetchUser, deleteItem);
 
 module.exports = router;

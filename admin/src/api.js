@@ -61,6 +61,18 @@ export const createArchiveItem = async (payload) => {
   return parseJson(response);
 };
 
+export const deleteArchiveItem = async (slug) => {
+  const response = await fetch(`${API_BASE_URL}/api/items/${encodeURIComponent(slug)}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "auth-token": adminAuth.getToken()
+    }
+  });
+
+  return parseJson(response);
+};
+
 export const fetchArchiveItems = async () => {
   const response = await fetch(`${API_BASE_URL}/api/items?page=1&limit=50`);
   return parseJson(response);
