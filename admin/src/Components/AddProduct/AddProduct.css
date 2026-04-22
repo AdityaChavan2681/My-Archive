@@ -76,6 +76,16 @@
   font-weight: 500;
 }
 
+.addproduct-message-success {
+  color: #166534;
+  font-weight: 600;
+}
+
+.addproduct-message-error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
 @media(max-width: 800px) {
   .addproduct {
     width: auto;

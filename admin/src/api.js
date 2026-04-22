@@ -61,6 +61,20 @@ export const createArchiveItem = async (payload) => {
   return parseJson(response);
 };
 
+export const updateArchiveItem = async (slug, payload) => {
+  const response = await fetch(`${API_BASE_URL}/api/items/${encodeURIComponent(slug)}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "auth-token": adminAuth.getToken()
+    },
+    body: JSON.stringify(payload)
+  });
+
+  return parseJson(response);
+};
+
 export const deleteArchiveItem = async (slug) => {
   const response = await fetch(`${API_BASE_URL}/api/items/${encodeURIComponent(slug)}`, {
     method: "DELETE",
@@ -75,5 +89,10 @@ export const deleteArchiveItem = async (slug) => {
 
 export const fetchArchiveItems = async () => {
   const response = await fetch(`${API_BASE_URL}/api/items?page=1&limit=50`);
+  return parseJson(response);
+};
+
+export const fetchArchiveItemBySlug = async (slug) => {
+  const response = await fetch(`${API_BASE_URL}/api/items/${encodeURIComponent(slug)}`);
   return parseJson(response);
 };

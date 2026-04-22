@@ -37,6 +37,20 @@
 .listproduct-actions{
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+.listproduct-edit-link{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  border-radius: 999px;
+  background: #1d4ed8;
+  color: #ffffff;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
 }
 .listproduct-delete-button{
   border: none;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ListProduct.css';
 import { deleteArchiveItem, fetchArchiveItems } from '../../api';
+import { Link } from 'react-router-dom';
 
 
 const ListProduct = () => {
@@ -69,6 +70,12 @@ const ListProduct = () => {
                 <p>{product.category}</p>
                 <p>{product.slug}</p>
                 <div className="listproduct-actions">
+                  <Link
+                    to={`/editproduct/${encodeURIComponent(product.slug)}`}
+                    className="listproduct-edit-link"
+                  >
+                    Edit
+                  </Link>
                   <button
                     type="button"
                     className="listproduct-delete-button"

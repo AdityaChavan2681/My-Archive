@@ -1,25 +1,87 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './AddProduct.css';
 import upload_icon from '../../assets/upload_area.svg';
-import { createArchiveItem, uploadArchiveImage } from '../../api';
+import { createArchiveItem, fetchArchiveItemBySlug, updateArchiveItem, uploadArchiveImage } from '../../api';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const VALID_CATEGORIES = new Set(["ships", "buildings", "others"]);
 const VALID_STATUSES = new Set(["published", "draft"]);
+const EMPTY_PRODUCT = {
+  title: '',
+  slug: '',
+  image: '',
+  category: 'ships',
+  summary: '',
+  content: '',
+  tags: '',
+  status: 'published',
+};
 
 const AddProduct = () => {
+  const navigate = useNavigate();
+  const { slug } = useParams();
+  const isEditMode = Boolean(slug);
   const [image, setImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(isEditMode);
   const [message, setMessage] = useState("");
-  const [productDetails, setProductDetails] = useState({
-    title: '',
-    slug: '',
-    image: '',
-    category: 'ships',
-    summary: '',
-    content: '',
-    tags: '',
-    status: 'published',
-  });
+  const [productDetails, setProductDetails] = useState(EMPTY_PRODUCT);
+  const formHeading = useMemo(() => (isEditMode ? "Edit Archive Entry" : "Add Archive Entry"), [isEditMode]);
+  const submitLabel = useMemo(() => {
+    if (isSubmitting) {
+      return isEditMode ? "Saving..." : "Creating...";
+    }
+
+    return isEditMode ? "Save Changes" : "Create Entry";
+  }, [isEditMode, isSubmitting]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const loadItem = async () => {
+      if (!slug) {
+        setProductDetails(EMPTY_PRODUCT);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setMessage("");
+
+      try {
+        const item = await fetchArchiveItemBySlug(slug);
+
+        if (ignore) {
+          return;
+        }
+
+        setProductDetails({
+          title: item.title || '',
+          slug: item.slug || '',
+          image: item.images?.[0]?.url || '',
+          category: item.category || 'ships',
+          summary: item.summary || '',
+          content: item.content || '',
+          tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''),
+          status: item.status || 'published',
+        });
+      } catch (error) {
+        if (!ignore) {
+          setMessage(error.message);
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadItem();
+
+    return () => {
+      ignore = true;
+    };
+  }, [slug]);
 
   const imageHandler = (e) => {
     setImage(e.target.files[0]);
@@ -61,7 +123,7 @@ const AddProduct = () => {
     return "";
   };
 
-  const Add_Product = async () => {
+  const saveProduct = async () => {
     setMessage("");
     const validationError = validateForm();
 
@@ -80,7 +142,7 @@ const AddProduct = () => {
         imageUrl = responseData.image_url;
       }
 
-      await createArchiveItem({
+      const payload = {
         ...productDetails,
         title: productDetails.title.trim(),
         slug: productDetails.slug.trim(),
@@ -88,20 +150,34 @@ const AddProduct = () => {
         content: productDetails.content.trim(),
         tags: productDetails.tags.trim(),
         image: imageUrl,
-      });
+      };
 
-      setProductDetails({
-        title: '',
-        slug: '',
-        image: '',
-        category: 'ships',
-        summary: '',
-        content: '',
-        tags: '',
-        status: 'published',
-      });
-      setImage(null);
-      setMessage("Archive entry created successfully.");
+      if (isEditMode) {
+        const updatedItem = await updateArchiveItem(slug, payload);
+        const nextSlug = updatedItem.slug || payload.slug || slug;
+
+        setProductDetails({
+          title: updatedItem.title || payload.title,
+          slug: updatedItem.slug || payload.slug,
+          image: updatedItem.images?.[0]?.url || imageUrl,
+          category: updatedItem.category || payload.category,
+          summary: updatedItem.summary || payload.summary,
+          content: updatedItem.content || payload.content,
+          tags: Array.isArray(updatedItem.tags) ? updatedItem.tags.join(', ') : payload.tags,
+          status: updatedItem.status || payload.status,
+        });
+        setImage(null);
+        setMessage("Archive entry updated successfully.");
+
+        if (nextSlug !== slug) {
+          navigate(`/editproduct/${encodeURIComponent(nextSlug)}`, { replace: true });
+        }
+      } else {
+        await createArchiveItem(payload);
+        setProductDetails(EMPTY_PRODUCT);
+        setImage(null);
+        setMessage("Archive entry created successfully.");
+      }
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -111,9 +187,11 @@ const AddProduct = () => {
 
   return (
     <div className='addproduct'>
+      <h1>{formHeading}</h1>
+      {isLoading ? <p>Loading archive entry...</p> : null}
       <div className="addproduct-itemfield">
         <p>Archive title</p>
-        <input value={productDetails.title} onChange={changeHandler} type="text" name='title' placeholder='Type here' />
+        <input value={productDetails.title} onChange={changeHandler} type="text" name='title' placeholder='Type here' disabled={isLoading} />
       </div>
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
@@ -124,6 +202,7 @@ const AddProduct = () => {
             type="text"
             name='slug'
             placeholder='optional-clean-url'
+            disabled={isLoading}
           />
         </div>
         <div className="addproduct-itemfield">
@@ -134,6 +213,7 @@ const AddProduct = () => {
             name="summary"
             placeholder="Type here"
             rows={4}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -145,16 +225,17 @@ const AddProduct = () => {
           name="content"
           placeholder="Type here"
           rows={6}
+          disabled={isLoading}
         />
       </div>
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
           <p>Tags</p>
-          <input value={productDetails.tags} onChange={changeHandler} type="text" name='tags' placeholder='ships, maritime, trade' />
+          <input value={productDetails.tags} onChange={changeHandler} type="text" name='tags' placeholder='ships, maritime, trade' disabled={isLoading} />
         </div>
         <div className="addproduct-itemfield">
           <p>Status</p>
-          <select value={productDetails.status} onChange={changeHandler} name="status" className="addproduct-selector">
+          <select value={productDetails.status} onChange={changeHandler} name="status" className="addproduct-selector" disabled={isLoading}>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
           </select>
@@ -162,7 +243,7 @@ const AddProduct = () => {
       </div>
       <div className="addproduct-itemfield">
         <p>Archive Category</p>
-        <select value={productDetails.category} onChange={changeHandler} name="category" className="addproduct-selector">
+        <select value={productDetails.category} onChange={changeHandler} name="category" className="addproduct-selector" disabled={isLoading}>
           <option value="ships">Ships</option>
           <option value="buildings">Buildings</option>
           <option value="others">Others</option>
@@ -170,13 +251,13 @@ const AddProduct = () => {
       </div>
       <div className="addproduct-itemfield">
         <label htmlFor="file-input">
-          <img src={image?URL.createObjectURL(image):upload_icon} className="addproduct-thumnail-img" alt="" />
+          <img src={image ? URL.createObjectURL(image) : (productDetails.image || upload_icon)} className="addproduct-thumnail-img" alt="" />
         </label>
-        <input onChange={imageHandler} type="file" name="image" id="file-input" hidden />
+        <input onChange={imageHandler} type="file" name="image" id="file-input" hidden disabled={isLoading} />
       </div>
-      {message ? <p>{message}</p> : null}
-      <button onClick={() => {Add_Product()}} className="addproduct-btn" disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : "Create Entry"}
+      {message ? <p className={message.toLowerCase().includes("successfully") ? "addproduct-message-success" : "addproduct-message-error"}>{message}</p> : null}
+      <button onClick={() => {saveProduct()}} className="addproduct-btn" disabled={isSubmitting || isLoading}>
+        {submitLabel}
       </button>
     </div>
   )

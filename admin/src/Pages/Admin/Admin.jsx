@@ -23,6 +23,7 @@ const Admin = () => {
       <Sidebar />
       <Routes>
         <Route path='/addproduct' element={<AddProduct />} />
+        <Route path='/editproduct/:slug' element={<AddProduct />} />
         <Route path='/listproduct' element={<ListProduct />} />
         <Route path='*' element={<AddProduct />} />
       </Routes>
